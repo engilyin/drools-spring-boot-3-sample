@@ -1,0 +1,48 @@
+package com.engilyin.drools.ruleunits;
+
+unit LoanValidationUnit;
+
+import com.engilyin.drools.model.LoanApplication;
+import java.math.BigDecimal;
+
+rule "Minimum Age Check"
+when
+    $application: /applications[ applicantAge < 18 ]
+then
+    modify($application) {
+        setApproved(false),
+        setRejectionReason("Applicant must be at least 18 years old")
+    };
+end
+
+rule "Maximum Loan Amount Check"
+when
+    $application: /applications[ amount > maxLoanAmount ]
+then
+    modify($application) {
+        setApproved(false),
+        setRejectionReason("Loan amount exceeds maximum allowed: " + maxLoanAmount)
+    };
+end
+
+rule "Income to Loan Ratio Check"
+when
+    $application: /applications[ applicantAge >= 18, amount <= maxLoanAmount, 
+                               amount.divide(income, 2, BigDecimal.ROUND_HALF_UP).doubleValue() > minIncomeRatio.doubleValue() ]
+then
+    modify($application) {
+        setApproved(false),
+        setRejectionReason("Monthly payment exceeds 30% of income")
+    };
+end
+
+rule "Approve Loan"
+when
+    $application: /applications[ applicantAge >= 18, amount <= maxLoanAmount, 
+                               amount.divide(income, 2, BigDecimal.ROUND_HALF_UP).doubleValue() <= minIncomeRatio.doubleValue() ]
+then
+    modify($application) {
+        setApproved(true),
+        setRejectionReason(null)
+    };
+end

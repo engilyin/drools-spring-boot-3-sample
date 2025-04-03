@@ -1,0 +1,41 @@
+spring:
+  application:
+    name: drools-spring-boot-3-sample
+
+    
+logging:
+  level:
+    ROOT: ERROR
+    com:
+      engilyin: DEBUG
+    io:
+      ROOT: INFO
+      spring: DEBUG
+    org:
+      drools: DEBUG
+      apache: INFO
+      springframework:
+        web: 
+          ROOT: DEBUG
+          server:
+            adapter:
+              HttpWebHandlerAdapter: TRACE
+#          filter:
+#            CommonsRequestLoggingFilter: TRACE 
+#        http:
+#          converter: DEBUG
+#    com:
+#      fasterxml:
+#        jackson: DEBUG
+        
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+  info:
+    git:
+      mode: FULL

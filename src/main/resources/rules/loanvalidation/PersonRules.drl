@@ -1,0 +1,29 @@
+package com.engilyin.drools.ruleunits;
+
+unit PersonValidationUnit;
+
+import com.engilyin.drools.model.Person;
+
+rule "Categorize Child"
+when
+    $p: /persons[ age < 18 ]
+then
+    modify($p) { setCategory("Child") };
+    validationMessages.add("Person " + $p.getName() + " is categorized as Child");
+end
+
+rule "Categorize Adult"
+when
+    $p: /persons[ age >= 18, age < 65 ]
+then
+    modify($p) { setCategory("Adult") };
+    validationMessages.add("Person " + $p.getName() + " is categorized as Adult");
+end
+
+rule "Categorize Senior"
+when
+    $p: /persons[ age >= 65 ]
+then
+    modify($p) { setCategory("Senior") };
+    validationMessages.add("Person " + $p.getName() + " is categorized as Senior");
+end
