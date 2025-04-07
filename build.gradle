@@ -32,6 +32,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	
     implementation "org.drools:drools-rules-spring-boot-starter:10.0.0"
+    implementation "org.drools:drools-wiring-dynamic:10.0.0"
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
