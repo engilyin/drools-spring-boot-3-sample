@@ -1,5 +1,8 @@
 package com.engilyin.drools.ruleunits;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.drools.ruleunits.api.DataSource;
 import org.drools.ruleunits.api.DataStore;
 import org.drools.ruleunits.api.RuleUnitData;
@@ -12,11 +15,11 @@ import lombok.Getter;
 public class PersonValidationUnit implements RuleUnitData {
 
 	private final DataStore<Person> persons;
-	private final DataStore<String> validationMessages;
+	private final List<String> validationMessages;
 
 	public PersonValidationUnit() {
 		this.persons = DataSource.createStore();
-		this.validationMessages = DataSource.createStore();
+		this.validationMessages = new ArrayList<>();
 	}
 
 	public void addPerson(Person person) {

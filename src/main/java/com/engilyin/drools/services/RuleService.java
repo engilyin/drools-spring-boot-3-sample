@@ -1,6 +1,5 @@
 package com.engilyin.drools.services;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.ruleunits.api.RuleUnitInstance;
@@ -33,14 +32,11 @@ public class RuleService {
     public List<String> getPersonValidationMessages(Person person) {
         PersonValidationUnit personUnit = new PersonValidationUnit();
         personUnit.addPerson(person);
-        List<String> messages = new ArrayList<>();
         
         try (RuleUnitInstance<PersonValidationUnit> instance = ruleUnitProvider.createRuleUnitInstance(personUnit)) {
             instance.fire();
             
-            //XXX fix it
-            //personUnit.getValidationMessages().forEach(messages::add);
-            return messages;
+            return personUnit.getValidationMessages();
         }
     }
 
