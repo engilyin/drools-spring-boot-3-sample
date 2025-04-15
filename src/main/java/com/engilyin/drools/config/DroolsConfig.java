@@ -4,6 +4,8 @@ import org.drools.ruleunits.api.RuleUnitProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.engilyin.drools.providers.SpringBootRuleUnitProvider;
+
 import lombok.extern.slf4j.Slf4j;
 
 @Configuration
@@ -12,7 +14,11 @@ public class DroolsConfig {
     
     @Bean
     public RuleUnitProvider ruleUnitProvider() {
-        return RuleUnitProvider.get();
+    	//To make it work when you run Spring Boot fat jar 
+    	//We will use custom provider
+        //return RuleUnitProvider.get();
+    	
+    	return new SpringBootRuleUnitProvider();
     }
     
 //    private List<Resource> getRuleResources() throws IOException {

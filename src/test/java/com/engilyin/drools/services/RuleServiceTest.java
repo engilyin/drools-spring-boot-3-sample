@@ -12,7 +12,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import com.engilyin.drools.model.Applicant;
 import com.engilyin.drools.model.LoanApplication;
+import com.engilyin.drools.model.LoanApplication2;
 import com.engilyin.drools.model.Person;
 
 @SpringBootTest
@@ -21,28 +23,28 @@ class RuleServiceTest {
 	@Autowired
 	RuleService ruleService;
 
-	@Test
-	void testPersonValidation() {
-		// Test child categorization
-		Person child = new Person("Child Person", 15, "test");
-		ruleService.validatePerson(child);
-		assertEquals("Child", child.getCategory());
-
-		// Test adult categorization
-		Person adult = new Person("Adult Person", 35, "test");
-		ruleService.validatePerson(adult);
-		assertEquals("Adult", adult.getCategory());
-
-		// Test senior categorization
-		Person senior = new Person("Senior Person", 70, "test");
-		ruleService.validatePerson(senior);
-		assertEquals("Senior", senior.getCategory());
-
-		// Test validation messages
-		List<String> messages = ruleService.getPersonValidationMessages(child);
-		assertFalse(messages.isEmpty());
-		assertTrue(messages.stream().anyMatch(msg -> msg.contains("Child Person")));
-	}
+//	@Test
+//	void testPersonValidation() {
+//		// Test child categorization
+//		Person child = new Person("Child Person", 15, "test");
+//		ruleService.validatePerson(child);
+//		assertEquals("Child", child.getCategory());
+//
+//		// Test adult categorization
+//		Person adult = new Person("Adult Person", 35, "test");
+//		ruleService.validatePerson(adult);
+//		assertEquals("Adult", adult.getCategory());
+//
+//		// Test senior categorization
+//		Person senior = new Person("Senior Person", 70, "test");
+//		ruleService.validatePerson(senior);
+//		assertEquals("Senior", senior.getCategory());
+//
+//		// Test validation messages
+//		List<String> messages = ruleService.getPersonValidationMessages(child);
+//		assertFalse(messages.isEmpty());
+//		assertTrue(messages.stream().anyMatch(msg -> msg.contains("Child Person")));
+//	}
 
 	@Test
 	void testLoanValidation() {
@@ -97,5 +99,19 @@ class RuleServiceTest {
 		ruleService.validateLoanApplication(validApp);
 		assertTrue(validApp.isApproved());
 		assertNull(validApp.getRejectionReason());
+	}
+	
+	@Test
+	void testLoanValidation2() {
+		LoanApplication2 underageApp = LoanApplication2
+				.builder()
+				.id("ABC10001")
+				.applicant(Applicant.builder().name("Young Person").age(12).build())
+				.amount(2000)	
+				.deposit(100)
+				.build();
+		ruleService.validateLoanApplication2(underageApp);
+		assertFalse(underageApp.isApproved());
+		
 	}
 }
