@@ -16,9 +16,8 @@ public class DroolsConfig {
     public RuleUnitProvider ruleUnitProvider() {
     	//To make it work when you run Spring Boot fat jar 
     	//We will use custom provider
-        //return RuleUnitProvider.get();
+        return RuleUnitProvider.get();
     	
-    	return new SpringBootRuleUnitProvider();
     }
     
 //    private List<Resource> getRuleResources() throws IOException {

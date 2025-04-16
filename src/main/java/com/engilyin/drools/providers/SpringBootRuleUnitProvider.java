@@ -60,6 +60,11 @@ public class SpringBootRuleUnitProvider implements RuleUnitProvider{
 	   private static final boolean USE_EXEC_MODEL = true;
 
 	    private final Map<String, RuleUnit> ruleUnitMap;
+	    
+	    @Override
+	    public int servicePriority() {
+	        return 1;
+	    }
 
 	    public SpringBootRuleUnitProvider() {
 	        this.ruleUnitMap = loadRuleUnits(Thread.currentThread().getContextClassLoader());
