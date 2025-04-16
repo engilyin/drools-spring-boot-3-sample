@@ -18,6 +18,7 @@
  */
 package com.engilyin.drools.providers;
 
+import static org.drools.util.IoUtils.readFileAsString;
 import static org.drools.util.JarUtils.normalizeSpringBootResourceUrlPath;
 
 import java.io.File;
@@ -36,9 +37,12 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.stream.Collectors;
 
+import org.drools.compiler.builder.conf.DecisionTableConfigurationImpl;
 import org.drools.compiler.kie.builder.impl.DrlProject;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.KieModuleKieProject;
+import org.drools.drl.extensions.DecisionTableFactory;
+import org.drools.drl.extensions.DecisionTableProvider;
 import org.drools.model.codegen.ExecutableModelProject;
 import org.drools.model.codegen.execmodel.CanonicalModelKieProject;
 import org.drools.ruleunits.api.RuleUnit;
@@ -154,12 +158,34 @@ public class SpringBootRuleUnitProvider implements RuleUnitProvider{
 	        Optional.ofNullable(new File(path).listFiles())
 	                .stream()
 	                .flatMap(Arrays::stream)
-	                .filter(f -> isDrlEntry(f.getName()))
+	                .filter(f -> doesDrlContainUnit(f, unitStatement) || doesXlsContainUnit(f, unitClass.getSimpleName()))
 	                .map(ks.getResources()::newFileSystemResource)
 	                .forEach(resource -> {
 	                    log.debug("Found {} in {} unit", resource.getSourcePath(), unitClass.getSimpleName());
 	                    resources.add(resource);
 	                });
+	    }
+	    
+	    private static boolean doesDrlContainUnit(File file, String unitStatement) {
+	        return file.getName().endsWith(".drl") && readFileAsString(file).contains(unitStatement);
+	    }
+
+	    private static boolean doesXlsContainUnit(File file, String unitName) {
+	        if (file.getName().endsWith(".drl.xls") || file.getName().endsWith(".drl.xlsx")) {
+	            DecisionTableProvider decisionTableProvider = DecisionTableFactory.getDecisionTableProvider();
+	            if (decisionTableProvider == null) {
+	                log.warn("decision table {} is found, but DecisionTableProvider implementation is not found in the classpath. Please add drools-decisiontables as a dependency", file.getName());
+	                return false;
+	            }
+	            Map<String, List<String[]>> dtableProperties = decisionTableProvider.loadPropertiesFromFile(file, new DecisionTableConfigurationImpl());
+	            return doDecisionTablePropertiesContainUnit(dtableProperties, unitName);
+	        }
+	        return false;
+	    }
+	    
+	    private static boolean doDecisionTablePropertiesContainUnit(Map<String, List<String[]>> dtableProperties, String unitName) {
+	        List<String[]> unitValues = dtableProperties.get("unit");
+	        return unitValues != null && unitValues.stream().anyMatch(valueArray -> valueArray.length > 0 && valueArray[0] != null && valueArray[0].trim().equals(unitName));
 	    }
 
 	    private static void collectResourcesInJar(KieServices ks, Collection<Resource> resources, Class<?> unitClass, String unitStatement, URL resourceUrl) {
