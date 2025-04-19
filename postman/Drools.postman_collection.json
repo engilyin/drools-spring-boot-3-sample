@@ -1,0 +1,40 @@
+{
+	"info": {
+		"_postman_id": "bed84fb9-7953-4e71-bbd0-eaed2f9f4ea3",
+		"name": "Drools",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "30323992"
+	},
+	"item": [
+		{
+			"name": "validate-person",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Bob\",\r\n\t\"age\": 45,\r\n\t\"category\": \"Regular\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/rules/validate-person",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"rules",
+						"validate-person"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
